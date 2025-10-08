@@ -1,10 +1,21 @@
 import { useRef, useState } from "react";
 import Header from "./Header";
+import { auth } from "../utils/firebase";
 import { isCheckValidData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isSignInForm, setIsSignNowForm] = useState(true);
   const [errorMessage, seterrorMessage] = useState();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const email = useRef(null);
   const password = useRef(null);
@@ -15,14 +26,103 @@ const Login = () => {
     // isCheckValidData
 
     // console.log(email.current.value);
-    
 
-    const message = isCheckValidData(email?.current?.value, password?.current?.value, name?.current?.value, !isSignInForm );
+    const message = isCheckValidData(
+      email?.current?.value,
+      password?.current?.value,
+      name?.current?.value,
+      !isSignInForm
+    );
 
-    console.log(message);
+    // console.log(message);
 
     seterrorMessage(message);
 
+    if (message) return;
+
+    if (!isSignInForm) {
+      // sign up logic
+      createUserWithEmailAndPassword(
+        auth,
+        email?.current?.value,
+        password?.current?.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name?.current?.value,
+            photoURL:
+              "https://media.licdn.com/dms/image/v2/D4E35AQEBF1Qob-RNdw/profile-framedphoto-shrink_400_400/B4EZbtAmr1GQAc-/0/1747733081113?e=1760461200&v=beta&t=aJiqOnPvCT1WeWdxqy_skgLjjnwPIqbZHVPjLzKSTYw",
+          })
+            .then(() => {
+              // Profile updated!
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              // user is signed in this is execute
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              // navigate("/browse");
+            })
+            .catch((error) => {
+              // An error occurred
+              seterrorMessage(error.message);
+            });
+          seterrorMessage("Account created successfully! Please sign in.");
+          setIsSignNowForm(true);
+          console.log(user);
+          // navigate("/browse");
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          let message = "";
+
+          switch (errorCode) {
+            case "auth/email-already-in-use":
+              message =
+                "This email is already registered. Please sign in instead.";
+              break;
+            case "auth/invalid-email":
+              message = "Please enter a valid email address.";
+              break;
+            case "auth/weak-password":
+              message = "Password should be at least 6 characters.";
+              break;
+            default:
+              message = "Something went wrong. Please try again.";
+          }
+
+          seterrorMessage(message);
+        });
+    } else {
+      // sign in logic
+      signInWithEmailAndPassword(
+        auth,
+        email?.current?.value,
+        password?.current?.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          seterrorMessage(
+            "No account found with this email. Please sign up first."
+          );
+        });
+    }
   };
 
   // const handleCloseForm = (e) => {
