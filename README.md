@@ -11,6 +11,8 @@
 - Create Sign Up User Account
 - Implement Sign in use Api
 - Create Redux Store with userSlice
+- Implement sign out
+- move hardcoded url move to constant.js
 
 
 # Features

@@ -7,14 +7,13 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { BG_URL, USER_AVATAR } from "../utils/constant";
 
 const Login = () => {
   const [isSignInForm, setIsSignNowForm] = useState(true);
   const [errorMessage, seterrorMessage] = useState();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const email = useRef(null);
@@ -52,8 +51,7 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: name?.current?.value,
-            photoURL:
-              "https://media.licdn.com/dms/image/v2/D4E35AQEBF1Qob-RNdw/profile-framedphoto-shrink_400_400/B4EZbtAmr1GQAc-/0/1747733081113?e=1760461200&v=beta&t=aJiqOnPvCT1WeWdxqy_skgLjjnwPIqbZHVPjLzKSTYw",
+            photoURL: USER_AVATAR,
           })
             .then(() => {
               // Profile updated!
@@ -73,6 +71,7 @@ const Login = () => {
               // An error occurred
               seterrorMessage(error.message);
             });
+          // console.log(photoURL);
           seterrorMessage("Account created successfully! Please sign in.");
           setIsSignNowForm(true);
           console.log(user);
@@ -111,7 +110,7 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
-          navigate("/browse");
+          // navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -137,12 +136,8 @@ const Login = () => {
   return (
     <div>
       <Header />
-      <div className="absolute">
-        <img
-          className=""
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/bebd95d0-65f9-41a9-9d12-4794db63653e/web/IN-en-20250922-TRIFECTA-perspective_5e75cfb4-3797-4f17-866b-181ff91a51dd_large.jpg"
-          alt="bg-image"
-        />
+      <div className="fixed">
+        <img className="" src={BG_URL} alt="bg-image" />
       </div>
 
       <form

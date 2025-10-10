@@ -39,7 +39,11 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.37.0",
     "@reduxjs/toolkit": "^2.9.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
     "react-router-dom": "^7.9.3",
     "tailwindcss": "^3.4.17"
   }
