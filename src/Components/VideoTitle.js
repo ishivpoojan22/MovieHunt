@@ -14,9 +14,9 @@ const VideoTitle = ({ title, desc, movieId }) => {
           </button>
         </div>
         <div className="flex">
-          <button className=" bg-gray-500 rounded opacity-50 text-white flex p-3 px-8 mx-4 gap-1 font-bold ">
+          <button className=" bg-gray-500 rounded opacity-50 text-black flex p-3 px-8 mx-4 gap-1 font-bold ">
             <img
-              className="w-5"
+              className="w-7"
               src="https://static.thenounproject.com/png/1815789-200.png"
             />
             More Info
