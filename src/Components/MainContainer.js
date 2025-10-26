@@ -6,7 +6,7 @@ const MainContainer = () => {
   const movies = useSelector((store) => store.movies?.nowPlayingMovie);
   if (!movies.length) return "wait"; 
 
-  const mainMovie = movies[11];
+  const mainMovie = movies[0];
 
   console.log(mainMovie);
 
